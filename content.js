@@ -17,13 +17,26 @@ function findClickable() {
 }
 
 // ---- Storage helper ------------------------------------------------------
+// "Extension context invalidated" acontece quando a extensão é recarregada/
+// removida enquanto a aba estava aberta: o content script órfão perde o acesso
+// ao chrome.storage. Nesse caso, silenciamos (o refresh pode ainda funcionar,
+// só não conseguimos atualizar o status no popup).
+function isContextValid() {
+  try {
+    return typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.id;
+  } catch {
+    return false;
+  }
+}
+
 function setStatus(status, updateTimestamp) {
+  if (!isContextValid()) return;
   const obj = { [STORAGE_KEYS.lastStatus]: status };
   if (updateTimestamp !== undefined) obj[STORAGE_KEYS.lastUpdate] = updateTimestamp;
   try {
     chrome.storage.sync.set(obj);
   } catch (e) {
-    console.warn("[HD-AutoRefresh] storage.set falhou:", e);
+    // Contexto invalidado entre a checagem e o set — silencioso.
   }
 }
 

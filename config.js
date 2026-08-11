@@ -22,7 +22,7 @@ const DEFAULT_INTERVAL_MIN = 1;
 const MIN_INTERVAL_MIN = 1;
 
 // Estado ativo por padrão.
-const DEFAULT_ACTIVE = false;
+const DEFAULT_ACTIVE = true;
 
 // Chaves de storage.
 const STORAGE_KEYS = {

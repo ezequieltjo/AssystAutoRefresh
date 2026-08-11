@@ -61,11 +61,11 @@ function render(cfg) {
 
 // ---- Storage I/O ----------------------------------------------------------
 function load() {
-  chrome.storage.sync.get(Object.values(STORAGE_KEYS), render);
+  chrome.storage.local.get(Object.values(STORAGE_KEYS), render);
 }
 
 function saveActive(value) {
-  chrome.storage.sync.set({ [STORAGE_KEYS.active]: value });
+  chrome.storage.local.set({ [STORAGE_KEYS.active]: value });
 }
 
 function saveInterval(minutes) {
@@ -74,7 +74,7 @@ function saveInterval(minutes) {
     return false;
   }
   els.hint.textContent = "";
-  chrome.storage.sync.set({ [STORAGE_KEYS.intervalMin]: minutes });
+  chrome.storage.local.set({ [STORAGE_KEYS.intervalMin]: minutes });
   return true;
 }
 
@@ -98,13 +98,13 @@ els.custom.addEventListener("change", () => {
 });
 
 els.refreshNow.addEventListener("click", () => {
-  chrome.storage.sync.set({ [STORAGE_KEYS.refreshNonce]: Date.now() });
+  chrome.storage.local.set({ [STORAGE_KEYS.refreshNonce]: Date.now() });
   els.hint.textContent = "Atualização solicitada.";
 });
 
 // ---- Live updates while popup is open -------------------------------------
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === "sync") load();
+  if (area === "local") load();
 });
 
 load();

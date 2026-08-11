@@ -24,15 +24,15 @@ O domínio é fixo (a extensão não pede acesso a outros sites). Para apontar a
 ## Uso
 
 - Clicar no ícone da extensão com a aba do Assyst aberta.
-- Marcar **Atualização automática**.
+- A automação vem **ativa por padrão** em instalações novas. Desmarcar **Atualização automática** para pausar.
 - Escolher o intervalo (1, 2, 5, 10, 15, 30 min, ou personalizado ≥ 1 min).
 - **Atualizar agora** força um ciclo imediato (útil para testar).
+- Ao voltar para a aba do Assyst (depois de trocar de aba/janela), um refresh dispara automaticamente para a lista aparecer sempre atualizada no momento em que você olha. Isso compensa o throttle que o navegador aplica aos timers em abas em segundo plano.
 
 ## Estados do status
 
-- **Ativo** — clicou e o Assyst confirmou o refresh.
-- **Agregando Assyst** — botão não encontrado na página (aguarda o próximo ciclo).
-- **Botão não respondeu** — clicou mas o hash não mudou dentro de 2s.
+- **Ativo** — clicou no botão e o refresh foi disparado.
+- **Aguardando Assyst** — botão não encontrado na página (aguarda o próximo ciclo).
 - **Pausado** — automação desativada.
 
 ## Segurança

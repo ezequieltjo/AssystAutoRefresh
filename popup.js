@@ -43,7 +43,7 @@ function render(cfg) {
   } else if (lastStatus === "confirmed") {
     label = "Ativo"; state = "confirmed";
   } else if (lastStatus === "waiting") {
-    label = "Aguardando Help Desk"; state = "waiting";
+    label = "Aguardando Assyst"; state = "waiting";
   } else if (lastStatus === "noResponse") {
     label = "Botão não respondeu"; state = "noResponse";
   } else {

@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Help Desk Auto-Refresh — Test Harness</title>
+  <title>Assyst Auto-Refresh — Test Harness</title>
   <style>
     body { font-family: sans-serif; padding: 20px; }
     #homepage\.pane\.panel_refreshIcon {
@@ -14,7 +14,7 @@
   </style>
 </head>
 <body>
-  <h1>Test Harness — simula botão do Help Desk</h1>
+  <h1>Test Harness — simula botão do Assyst</h1>
   <p>Clica no botão abaixo. O handler simula o app Dojo mudando o hash:</p>
   <span id="homepage.pane.panel_refreshIcon" title="Atualizar">Atualizar</span>
 
@@ -29,7 +29,7 @@
     const btn = document.getElementById("homepage.pane.panel_refreshIcon");
     btn.addEventListener("click", () => {
       log("CLIQUE detectado no botão.");
-      // Simula o app mudando o hash, como o Help Desk real faz.
+      // Simula o app mudando o hash, como o Assyst real faz.
       setTimeout(() => {
         location.hash = "welcome%2FWelcomeDispatchAction.do?dispatch=refresh";
         log("Hash atualizado para dispatch=refresh.");

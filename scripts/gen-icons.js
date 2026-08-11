@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * gen-icons.js — build-time PNG icon generator for the Help Desk Auto-Refresh
+ * gen-icons.js — build-time PNG icon generator for the Assyst Auto-Refresh
  * Chrome/Edge (Manifest V3) extension.
  *
  * Produces three valid PNG files at icons/icon{16,48,128}.png — a solid blue

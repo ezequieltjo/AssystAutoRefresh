@@ -2,12 +2,12 @@
 // CONFIGURAÇÃO — EDITAR AQUI
 // ============================================================
 
-// ID do botão "Atualizar" na interface do Help Desk.
+// ID do botão "Atualizar" na interface do Assyst.
 // Nota: "homePage" com P maiúsculo (case-sensitive).
 const BUTTON_ID = "homePage.pane.panel_refreshIcon";
 
-// Domínio/padrão do Help Desk. DEVE bater com "matches" no manifest.json.
-const HELPDESK_URL = "https://portaldeservicostjpb.lanlink.com.br/assystweb/application.do*";
+// Domínio/padrão do Assyst. DEVE bater com "matches" no manifest.json.
+const ASSYST_URL = "https://portaldeservicostjpb.lanlink.com.br/assystweb/application.do*";
 
 // Marcador no hash que confirma que o refresh foi processado pela aplicação.
 const REFRESH_HASH_MARKER = "dispatch=refresh";

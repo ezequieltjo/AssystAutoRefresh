@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * verify-icons.js — strict validator for the generated PNGs.
+ * verify-icons.js — strict structural validator for the extension PNGs.
  * Run: node scripts/verify-icons.js
  *
  * For each of icons/icon{16,48,128}.png:
@@ -10,6 +10,10 @@
  *   - recompute CRC32 of type+data for every chunk and compare to stored CRC
  *   - inflate IDAT and confirm the raw length equals size * (1 + size*4)
  *   - confirm the stored raw pixel layout (filter byte 0 per scanline)
+ *
+ * Icons are arbitrary artwork (resized from icons/icon.png via resize-icon.js,
+ * or generated via gen-icons.js), so pixel COLORS are not asserted — only the
+ * PNG structure and dimensions.
  *
  * Exits non-zero on any failure.
  */
@@ -131,8 +135,8 @@ for (const size of SIZES) {
   console.log(`  IDAT inflate: raw=${raw.length}  expected=${expectedRaw}  ${sizeOk ? 'OK' : 'FAIL'}`);
   if (!sizeOk) failures++;
 
-  // 4. Confirm every scanline starts with filter byte 0 and sample a known
-  //    blue pixel at the center vs transparent corner.
+  // 4. Confirm every scanline starts with filter byte 0. Pixel colors are
+  //    arbitrary artwork, so we only print a center/corner sample for info.
   const stride = 1 + parsedW * 4;
   const center = (Math.floor(parsedH / 2) * stride) + 1 + (Math.floor(parsedW / 2) * 4);
   const corner = 1; // (0,0)
@@ -140,20 +144,9 @@ for (const size of SIZES) {
   console.log(`  scanline filters: ${filtersOk ? 'all 0 (None)' : 'NONZERO FOUND'}`);
   if (!filtersOk) failures++;
   console.log(
-    `  center pixel: rgba(${raw[center]},${raw[center + 1]},${raw[center + 2]},${raw[center + 3]})  ` +
-      `(expect 26,115,232,255)`
+    `  center pixel: rgba(${raw[center]},${raw[center + 1]},${raw[center + 2]},${raw[center + 3]})  (info)`
   );
-  console.log(`  corner  pixel: alpha=${raw[corner + 3]}  (expect 0 transparent)`);
-  if (
-    raw[center] !== 26 ||
-    raw[center + 1] !== 115 ||
-    raw[center + 2] !== 232 ||
-    raw[center + 3] !== 255 ||
-    raw[corner + 3] !== 0
-  ) {
-    console.log(`    FAIL: pixel values off`);
-    failures++;
-  }
+  console.log(`  corner  pixel: alpha=${raw[corner + 3]}  (info)`);
 }
 
 console.log(`\n${failures === 0 ? 'ALL CHECKS PASSED' : `${failures} CHECK(S) FAILED`}`);

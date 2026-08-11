@@ -93,7 +93,8 @@ function stopTimer() {
 
 function applyConfig(cfg) {
   const active = cfg[STORAGE_KEYS.active] ?? DEFAULT_ACTIVE;
-  currentIntervalMin = cfg[STORAGE_KEYS.intervalMin] ?? DEFAULT_INTERVAL_MIN;
+  const raw = Number(cfg[STORAGE_KEYS.intervalMin]);
+  currentIntervalMin = Number.isFinite(raw) && raw >= MIN_INTERVAL_MIN ? raw : DEFAULT_INTERVAL_MIN;
   if (active) startTimer();
   else stopTimer();
 }
@@ -106,21 +107,12 @@ chrome.storage.sync.get(Object.values(STORAGE_KEYS), (cfg) => {
 // ---- React to config changes from popup ----------------------------------
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== "sync") return;
-  const relevant = {};
-  let changed = false;
-  for (const key of [STORAGE_KEYS.active, STORAGE_KEYS.intervalMin]) {
-    if (changes[key]) { relevant[key] = changes[key].newValue; changed = true; }
+  let nonce = false, config = false;
+  for (const key of [STORAGE_KEYS.active, STORAGE_KEYS.intervalMin, STORAGE_KEYS.refreshNonce]) {
+    if (!changes[key]) continue;
+    if (key === STORAGE_KEYS.refreshNonce) nonce = true;
+    else config = true;
   }
-  if (changed) {
-    chrome.storage.sync.get(Object.values(STORAGE_KEYS), applyConfig);
-  }
-});
-
-// ---- React to "refresh now" from popup -----------------------------------
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if (msg && msg.type === "refreshNow") {
-    refreshTick();
-    sendResponse({ ok: true });
-  }
-  return true; // async response
+  if (nonce) refreshTick();
+  if (config) chrome.storage.sync.get(Object.values(STORAGE_KEYS), applyConfig);
 });

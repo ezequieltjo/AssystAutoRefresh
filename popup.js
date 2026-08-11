@@ -98,15 +98,8 @@ els.custom.addEventListener("change", () => {
 });
 
 els.refreshNow.addEventListener("click", () => {
-  // Broadcast: any content script listening runs refreshTick().
-  chrome.runtime.sendMessage({ type: "refreshNow" }, () => {
-    // Storage will update via onChanged; close popup for visual feedback.
-    if (chrome.runtime.lastError) {
-      els.hint.textContent = "Nenhuma aba do Help Desk ativa.";
-    } else {
-      els.hint.textContent = "Atualização solicitada.";
-    }
-  });
+  chrome.storage.sync.set({ [STORAGE_KEYS.refreshNonce]: Date.now() });
+  els.hint.textContent = "Atualização solicitada.";
 });
 
 // ---- Live updates while popup is open -------------------------------------

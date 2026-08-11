@@ -29,5 +29,6 @@ const STORAGE_KEYS = {
   intervalMin: "hd_intervalMin",
   lastUpdate: "hd_lastUpdate",
   lastStatus: "hd_lastStatus", // "confirmed" | "noResponse" | "waiting"
+  refreshNonce: "hd_refreshNonce", // monotônico: popup grava Date.now() para disparar refresh imediato
 };
 // ============================================================

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Help Desk Auto-Refresh — Test Harness</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    #homepage\.pane\.panel_refreshIcon {
+      display: inline-block; cursor: pointer; padding: 6px 12px;
+      background: #1a73e8; color: white; border-radius: 4px;
+    }
+    #log { margin-top: 20px; font-family: monospace; white-space: pre-wrap;
+           background: #f5f5f5; padding: 10px; min-height: 100px; }
+  </style>
+</head>
+<body>
+  <h1>Test Harness — simula botão do Help Desk</h1>
+  <p>Clica no botão abaixo. O handler simula o app Dojo mudando o hash:</p>
+  <span id="homepage.pane.panel_refreshIcon" title="Atualizar">Atualizar</span>
+
+  <div id="log"></div>
+
+  <script>
+    const logEl = document.getElementById("log");
+    function log(msg) {
+      logEl.textContent += new Date().toLocaleTimeString("pt-BR") + " — " + msg + "\n";
+    }
+
+    const btn = document.getElementById("homepage.pane.panel_refreshIcon");
+    btn.addEventListener("click", () => {
+      log("CLIQUE detectado no botão.");
+      // Simula o app mudando o hash, como o Help Desk real faz.
+      setTimeout(() => {
+        location.hash = "welcome%2FWelcomeDispatchAction.do?dispatch=refresh";
+        log("Hash atualizado para dispatch=refresh.");
+      }, 100);
+    });
+
+    log("Harness pronto. Abre a popup da extensão e ativa.");
+  </script>
+</body>
+</html>

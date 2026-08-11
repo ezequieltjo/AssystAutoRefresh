@@ -80,7 +80,8 @@ header h1 {
   font-size: 13px;
 }
 
-#customInterval { display: block; }
+#customInterval[hidden] { display: none; }
+#customInterval:not([hidden]) { display: block; }
 
 #refreshNowBtn {
   background: var(--accent);

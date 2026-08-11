@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Help Desk Auto-Refresh</h1>
+  </header>
+
+  <section class="status-box">
+    <div class="status-row"><span>Status:</span> <strong id="statusText">—</strong></div>
+    <div class="status-row"><span>Intervalo:</span> <span id="intervalText">—</span></div>
+    <div class="status-row"><span>Última atualização:</span> <span id="lastUpdateText">—</span></div>
+    <div class="status-row"><span>Próxima atualização:</span> <span id="nextUpdateText">—</span></div>
+  </section>
+
+  <section class="controls">
+    <label class="switch">
+      <input type="checkbox" id="activeToggle">
+      <span>Atualização automática</span>
+    </label>
+
+    <label for="intervalSelect">Intervalo</label>
+    <select id="intervalSelect">
+      <option value="1">1 minuto</option>
+      <option value="2">2 minutos</option>
+      <option value="5">5 minutos</option>
+      <option value="10">10 minutos</option>
+      <option value="15">15 minutos</option>
+      <option value="30">30 minutos</option>
+      <option value="custom">Personalizado...</option>
+    </select>
+    <input type="number" id="customInterval" min="1" placeholder="min" hidden>
+
+    <button id="refreshNowBtn">Atualizar agora</button>
+  </section>
+
+  <footer>
+    <p id="hint"></p>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

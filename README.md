@@ -39,4 +39,4 @@ O domínio é fixo (a extensão não pede acesso a outros sites). Para apontar a
 
 - Sem acesso a outros sites além do declarado em `matches`.
 - Sem rede externa, sem coleta de dados, sem mutação de conteúdo além do clique.
-- Configurações persistem via `chrome.storage.sync`.
+- Configurações persistem via `chrome.storage.local`.

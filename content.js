@@ -34,7 +34,7 @@ function setStatus(status, updateTimestamp) {
   const obj = { [STORAGE_KEYS.lastStatus]: status };
   if (updateTimestamp !== undefined) obj[STORAGE_KEYS.lastUpdate] = updateTimestamp;
   try {
-    chrome.storage.sync.set(obj);
+    chrome.storage.local.set(obj);
   } catch (e) {
     // Contexto invalidado entre a checagem e o set — silencioso.
   }
@@ -92,13 +92,13 @@ function applyConfig(cfg) {
 }
 
 // ---- Boot ----------------------------------------------------------------
-chrome.storage.sync.get(Object.values(STORAGE_KEYS), (cfg) => {
+chrome.storage.local.get(Object.values(STORAGE_KEYS), (cfg) => {
   applyConfig(cfg);
 });
 
 // ---- React to config changes from popup ----------------------------------
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area !== "sync") return;
+  if (area !== "local") return;
   let nonce = false, config = false;
   for (const key of [STORAGE_KEYS.active, STORAGE_KEYS.intervalMin, STORAGE_KEYS.refreshNonce]) {
     if (!changes[key]) continue;
@@ -106,5 +106,5 @@ chrome.storage.onChanged.addListener((changes, area) => {
     else config = true;
   }
   if (nonce) refreshTick();
-  if (config) chrome.storage.sync.get(Object.values(STORAGE_KEYS), applyConfig);
+  if (config) chrome.storage.local.get(Object.values(STORAGE_KEYS), applyConfig);
 });

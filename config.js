@@ -3,10 +3,11 @@
 // ============================================================
 
 // ID do botão "Atualizar" na interface do Help Desk.
-const BUTTON_ID = "homepage.pane.panel_refreshIcon";
+// Nota: "homePage" com P maiúsculo (case-sensitive).
+const BUTTON_ID = "homePage.pane.panel_refreshIcon";
 
 // Domínio/padrão do Help Desk. DEVE bater com "matches" no manifest.json.
-const HELPDESK_URL = "https://meu-helpdesk.exemplo.com.br/*/application.do*";
+const HELPDESK_URL = "https://portaldeservicostjpb.lanlink.com.br/assystweb/application.do*";
 
 // Marcador no hash que confirma que o refresh foi processado pela aplicação.
 const REFRESH_HASH_MARKER = "dispatch=refresh";

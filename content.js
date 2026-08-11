@@ -1,36 +1,19 @@
 "use strict";
 
 // ---- DOM lookup ----------------------------------------------------------
-// Procura o botão pelo ID estável. Fallback: ancestral clicável (Dojo/Dijit
-// amarra o evento no <button>/<span role=button> pai do ícone).
+// Procura o botão "Atualizar". Estratégia resiliente em ordem:
+//  1. Por ID (fallback — getElementById trata o id como string literal).
+//  2. aria-labelledby referencia o id do refreshIcon (estável no Dojo/Dijit).
+//  3. role=button + title="Atualizar" (confirmado funcional no assyst real).
+// Em alguns DOMs do assyst o seletor CSS "#id.com.pontos" falha; por isso
+// os seletores abaixo evitam o "#id" e usam atributos estruturais.
 function findClickable() {
-  const el = document.getElementById(BUTTON_ID);
+  let el =
+    document.getElementById(BUTTON_ID) ||
+    document.querySelector('[aria-labelledby$="refreshIcon_label"][role="button"]') ||
+    document.querySelector('[role="button"][title="Atualizar"]');
   if (!el) return null;
   return el.closest("button, [role='button'], .dijitButton") || el;
-}
-
-// ---- Hash confirmation ---------------------------------------------------
-// Promise não-bloqueante: resolve true se o hash mudar para incluir o marker
-// dentro do timeout; false caso contrário.
-function waitRefreshConfirmation() {
-  return new Promise((resolve) => {
-    const before = location.hash;
-    const onChange = () => {
-      if (location.hash.includes(REFRESH_HASH_MARKER) && location.hash !== before) {
-        cleanup();
-        resolve(true);
-      }
-    };
-    const timer = setTimeout(() => {
-      cleanup();
-      resolve(false);
-    }, REFRESH_CONFIRM_TIMEOUT_MS);
-    function cleanup() {
-      clearTimeout(timer);
-      window.removeEventListener("hashchange", onChange);
-    }
-    window.addEventListener("hashchange", onChange);
-  });
 }
 
 // ---- Storage helper ------------------------------------------------------
@@ -45,7 +28,10 @@ function setStatus(status, updateTimestamp) {
 }
 
 // ---- Core tick -----------------------------------------------------------
-async function refreshTick() {
+// Refresh = clicou no botão (que existe). O assyst não muda o hash em refreshs
+// repetidos, então o hash não é indicador confiável de sucesso — consideramos
+// o refresh confirmado assim que o clique dispara sem erro.
+function refreshTick() {
   const clickable = findClickable();
   if (!clickable) {
     setStatus("waiting");
@@ -54,18 +40,11 @@ async function refreshTick() {
   }
   try {
     clickable.click();
+    setStatus("confirmed", Date.now());
+    console.log("[HD-AutoRefresh] Refresh disparado.");
   } catch (e) {
     console.warn("[HD-AutoRefresh] click() lançou:", e);
     setStatus("waiting");
-    return;
-  }
-  const confirmed = await waitRefreshConfirmation();
-  if (confirmed) {
-    setStatus("confirmed", Date.now());
-    console.log("[HD-AutoRefresh] Refresh confirmado.");
-  } else {
-    setStatus("noResponse");
-    console.warn("[HD-AutoRefresh] Clique não produziu mudança de hash.");
   }
 }
 

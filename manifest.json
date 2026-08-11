@@ -6,7 +6,7 @@
   "permissions": ["storage"],
   "content_scripts": [
     {
-      "matches": ["https://meu-helpdesk.exemplo.com.br/*/application.do*"],
+      "matches": ["https://portaldeservicostjpb.lanlink.com.br/assystweb/application.do*"],
       "js": ["config.js", "content.js"],
       "run_at": "document_idle"
     }

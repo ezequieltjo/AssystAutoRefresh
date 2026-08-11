@@ -68,6 +68,7 @@ console.log("[HD-AutoRefresh] content.js carregado. window.__hdRefreshTick() dis
 // ---- Timer lifecycle -----------------------------------------------------
 let intervalId = null;
 let currentIntervalMin = DEFAULT_INTERVAL_MIN;
+let isActive = DEFAULT_ACTIVE; // espelha o estado ativo (usado no visibilitychange)
 
 function startTimer() {
   stopTimer();
@@ -85,6 +86,7 @@ function stopTimer() {
 
 function applyConfig(cfg) {
   const active = cfg[STORAGE_KEYS.active] ?? DEFAULT_ACTIVE;
+  isActive = active;
   const raw = Number(cfg[STORAGE_KEYS.intervalMin]);
   currentIntervalMin = Number.isFinite(raw) && raw >= MIN_INTERVAL_MIN ? raw : DEFAULT_INTERVAL_MIN;
   if (active) startTimer();
@@ -107,4 +109,18 @@ chrome.storage.onChanged.addListener((changes, area) => {
   }
   if (nonce) refreshTick();
   if (config) chrome.storage.local.get(Object.values(STORAGE_KEYS), applyConfig);
+});
+
+// ---- Refresh imediato ao voltar para a aba --------------------------------
+// Quando a aba do assyst volta a ficar visível (usuário trocou de aba/janela
+// e voltou), dispara um refresh imediato se a automação estiver ativa — assim
+// a lista aparece sempre atualizada no momento em que o usuário olha. Em
+// segundo plano o navegador throttleia o setInterval, então sem isso o usuário
+// poderia voltar e ver dados defasados até o próximo ciclo cair.
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState !== "visible") return;
+  if (!isActive) return;
+  console.log("[HD-AutoRefresh] Aba voltou ao foco — refresh imediato.");
+  refreshTick();
+  startTimer(); // reinicia o ciclo a partir de agora (evita disparo duplicado)
 });

@@ -17,23 +17,27 @@ function formatTime(ts) {
   return new Date(ts).toLocaleTimeString("pt-BR");
 }
 
+function formatInterval(sec) {
+  return sec < 60 ? sec + " s" : sec / 60 + " min";
+}
+
 // ---- Render status from storage -------------------------------------------
 function render(cfg) {
   const active     = cfg[STORAGE_KEYS.active] ?? DEFAULT_ACTIVE;
-  const intervalMin = cfg[STORAGE_KEYS.intervalMin] ?? DEFAULT_INTERVAL_MIN;
+  const intervalSec = cfg[STORAGE_KEYS.intervalSec] ?? DEFAULT_INTERVAL_SEC;
   const lastUpdate = cfg[STORAGE_KEYS.lastUpdate];
   const lastStatus = cfg[STORAGE_KEYS.lastStatus];
 
   // Active toggle + interval select
   els.active.checked = active;
-  const preset = ["1", "2", "5", "10", "15", "30"].includes(String(intervalMin));
+  const preset = ["15", "30", "60", "120", "300", "600", "900", "1800"].includes(String(intervalSec));
   if (preset) {
-    els.intervalSel.value = String(intervalMin);
+    els.intervalSel.value = String(intervalSec);
     els.custom.hidden = true;
   } else {
     els.intervalSel.value = "custom";
     els.custom.hidden = false;
-    els.custom.value = String(intervalMin);
+    els.custom.value = String(intervalSec);
   }
 
   // Status text + color state
@@ -53,10 +57,10 @@ function render(cfg) {
   els.status.dataset.state = state;
 
   // Interval / times
-  els.interval.textContent = intervalMin + " min";
+  els.interval.textContent = formatInterval(intervalSec);
   els.lastUpdate.textContent = formatTime(lastUpdate);
   els.nextUpdate.textContent =
-    lastUpdate && active ? formatTime(lastUpdate + intervalMin * 60000) : "—";
+    lastUpdate && active ? formatTime(lastUpdate + intervalSec * 1000) : "—";
 }
 
 // ---- Storage I/O ----------------------------------------------------------
@@ -68,13 +72,13 @@ function saveActive(value) {
   chrome.storage.local.set({ [STORAGE_KEYS.active]: value });
 }
 
-function saveInterval(minutes) {
-  if (!Number.isFinite(minutes) || minutes < MIN_INTERVAL_MIN) {
-    els.hint.textContent = "Intervalo mínimo: " + MIN_INTERVAL_MIN + " minuto(s).";
+function saveInterval(seconds) {
+  if (!Number.isFinite(seconds) || seconds < MIN_INTERVAL_SEC) {
+    els.hint.textContent = "Intervalo mínimo: " + MIN_INTERVAL_SEC + " segundo(s).";
     return false;
   }
   els.hint.textContent = "";
-  chrome.storage.local.set({ [STORAGE_KEYS.intervalMin]: minutes });
+  chrome.storage.local.set({ [STORAGE_KEYS.intervalSec]: seconds });
   return true;
 }
 
@@ -107,4 +111,5 @@ chrome.storage.onChanged.addListener((changes, area) => {
   if (area === "local") load();
 });
 
+migrateIntervalStorage();
 load();

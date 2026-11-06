@@ -67,13 +67,13 @@ console.log("[HD-AutoRefresh] content.js carregado. window.__hdRefreshTick() dis
 
 // ---- Timer lifecycle -----------------------------------------------------
 let intervalId = null;
-let currentIntervalMin = DEFAULT_INTERVAL_MIN;
+let currentIntervalSec = DEFAULT_INTERVAL_SEC;
 let isActive = DEFAULT_ACTIVE; // espelha o estado ativo (usado no visibilitychange)
 
 function startTimer() {
   stopTimer();
-  intervalId = setInterval(refreshTick, currentIntervalMin * 60000);
-  console.log("[HD-AutoRefresh] Timer iniciado: a cada", currentIntervalMin, "min.");
+  intervalId = setInterval(refreshTick, currentIntervalSec * 1000);
+  console.log("[HD-AutoRefresh] Timer iniciado: a cada", currentIntervalSec, "s.");
 }
 
 function stopTimer() {
@@ -87,13 +87,14 @@ function stopTimer() {
 function applyConfig(cfg) {
   const active = cfg[STORAGE_KEYS.active] ?? DEFAULT_ACTIVE;
   isActive = active;
-  const raw = Number(cfg[STORAGE_KEYS.intervalMin]);
-  currentIntervalMin = Number.isFinite(raw) && raw >= MIN_INTERVAL_MIN ? raw : DEFAULT_INTERVAL_MIN;
+  const raw = Number(cfg[STORAGE_KEYS.intervalSec]);
+  currentIntervalSec = Number.isFinite(raw) && raw >= MIN_INTERVAL_SEC ? raw : DEFAULT_INTERVAL_SEC;
   if (active) startTimer();
   else stopTimer();
 }
 
 // ---- Boot ----------------------------------------------------------------
+migrateIntervalStorage();
 chrome.storage.local.get(Object.values(STORAGE_KEYS), (cfg) => {
   applyConfig(cfg);
 });
@@ -102,7 +103,7 @@ chrome.storage.local.get(Object.values(STORAGE_KEYS), (cfg) => {
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== "local") return;
   let nonce = false, config = false;
-  for (const key of [STORAGE_KEYS.active, STORAGE_KEYS.intervalMin, STORAGE_KEYS.refreshNonce]) {
+  for (const key of [STORAGE_KEYS.active, STORAGE_KEYS.intervalSec, STORAGE_KEYS.refreshNonce]) {
     if (!changes[key]) continue;
     if (key === STORAGE_KEYS.refreshNonce) nonce = true;
     else config = true;

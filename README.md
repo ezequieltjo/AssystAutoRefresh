@@ -25,7 +25,7 @@ O domínio é fixo (a extensão não pede acesso a outros sites). Para apontar a
 
 - Clicar no ícone da extensão com a aba do Assyst aberta.
 - A automação vem **ativa por padrão** em instalações novas. Desmarcar **Atualização automática** para pausar.
-- Escolher o intervalo (1, 2, 5, 10, 15, 30 min, ou personalizado ≥ 1 min).
+- Escolher o intervalo (15 s, 30 s, 1, 2, 5, 10, 15, 30 min, ou personalizado ≥ 5 s).
 - **Atualizar agora** força um ciclo imediato (útil para testar).
 - Ao voltar para a aba do Assyst (depois de trocar de aba/janela), um refresh dispara automaticamente para a lista aparecer sempre atualizada no momento em que você olha. Isso compensa o throttle que o navegador aplica aos timers em abas em segundo plano.
 
